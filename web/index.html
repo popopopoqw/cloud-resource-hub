@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>资源中心 · 网盘资源转存工具</title>
+  <meta name="description" content="资源中心：网盘转存、书库、我的网盘、Gmail 邮箱与 Cloudflare 监控的一站式工具。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="#/dashboard">
+        <span class="brand-icon" style="color:var(--primary)"><svg class="ic" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>
+        <span class="brand-name">资源中心</span>
+      </a>
+      <nav class="nav" id="nav">
+        <a href="#/dashboard" data-route="dashboard"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> 概览</a>
+      </nav>
+      <div class="topbar-right">
+        <div class="topbar-stats" id="topStats"></div>
+        <div class="user-box" id="userBox"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main">
+    <div class="subnav" id="subnav" hidden></div>
+    <div id="app"></div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <aside class="footer-notice" aria-label="使用声明">
+        <span class="footer-notice-icon" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V5l8-3 8 3v8Z"/><path d="M12 8v4"/><path d="M12 16h.01"/>
+          </svg>
+        </span>
+        <div class="footer-notice-copy">
+          <div class="footer-notice-head">
+            <strong>使用声明</strong>
+            <span>仅供学习、研究与个人娱乐使用</span>
+          </div>
+          <p>禁止用于任何商业用途。本站不存储、复制或传播网盘文件，仅提供链接解析与转存工具。</p>
+          <p>请确保资源来源及使用方式合法合规，并自行承担相关风险与责任；项目作者及维护者不对由此产生的直接或间接损失负责。</p>
+        </div>
+      </aside>
+    </div>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

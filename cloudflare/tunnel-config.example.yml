@@ -1,0 +1,30 @@
+# Cloudflare Tunnel 对接配置示例
+# 用途：把运行在任意内网/VPS 上的 resource-center 暴露到 Cloudflare 网络，
+# 无需公网 IP、无需开放端口，自动获得 HTTPS 与 DDoS 防护。
+#
+# 使用步骤：
+#   1. 在 Cloudflare Zero Trust 控制台创建 Tunnel，拿到 <TUNNEL_ID> 与凭据
+#      （或使用 `cloudflared tunnel login` + `cloudflared tunnel create resource-center`）
+#   2. 修改下方 tunnel ID 与 credentials-file 路径
+#   3. 域名 DNS 处先添加 CNAME：<TUNNEL_ID>.cfargotunnel.com（开启代理）
+#   4. 启动：cloudflared tunnel --config cloudflare/tunnel-config.yml run resource-center
+#
+# 官方文档：https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
+
+tunnel: <TUNNEL_ID>
+credentials-file: /etc/cloudflared/<TUNNEL_ID>.json
+protocol: http2
+
+# 源站就是本服务（默认监听 :8080）
+ingress:
+  # 可选：Cloudflare 边缘加速静态资源
+  - hostname: static.pan.example.com
+    service: http://localhost:8080
+    path: ^/static/.*
+  # 主域名
+  - hostname: pan.example.com
+    service: http://localhost:8080
+    originRequest:
+      connectTimeout: 30s
+      noTLSVerify: false
+  - service: http_status:404

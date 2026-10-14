@@ -1,0 +1,13 @@
+.env
+resource-center
+resource-center.db
+resource-center.db-wal
+resource-center.db-shm
+data/
+*.log
+resource-center-linux
+.env.bak-local
+*.un~
+*~
+.DS_Store
+cloudflare/tunnel-config.yml

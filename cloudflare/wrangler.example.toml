@@ -1,0 +1,23 @@
+# Cloudflare Workers 部署参考（可选路线）
+#
+# 说明：Go 服务本身无法直接跑在 Workers 上（Workers 是 JS/WASM 运行时）。
+# 常见两种对接方式：
+#
+# 方式 A（推荐，零改造）：源站跑 Go 服务 + Cloudflare Tunnel，见
+#   cloudflare/tunnel-config.example.yml
+#
+# 方式 B（边缘代理）：Workers/Pages 作为前置入口做缓存、限流、鉴权，
+#   回源到你的 Go 服务。下面是一个最小 wrangler 配置 + 反代示例。
+#
+# 安装：npm i -g wrangler && wrangler deploy
+
+name = "resource-center-edge"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+[vars]
+ORIGIN = "https://pan.example.com" # 你的 Go 服务公网地址（Tunnel/DNS 代理后）
+
+# 可选：把静态资源缓存规则、速率限制等放到边缘
+# [[rules]]
+# type = "ResponseHeader"

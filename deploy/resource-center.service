@@ -1,0 +1,35 @@
+# resource-center systemd 服务单元
+# 安装：deploy/gce-init.sh 自动完成；或手动：
+#   sudo install -m 644 deploy/resource-center.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now resource-center
+#
+# 应用从 WorkingDirectory 读取 .env、写 SQLite 与 data/（config.Load 约定），
+# 部署目录默认 /opt/resource-center（deploy/release.sh 上传目标）。
+
+[Unit]
+Description=resource-center 资源中心
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=rc
+Group=rc
+WorkingDirectory=/opt/resource-center
+ExecStart=/opt/resource-center/resource-center
+Restart=always
+RestartSec=3
+
+# 2C1G 实例保护：限制应用内存，给系统与 cloudflared 留余量，
+# 避免抓取高峰把内存吃光导致隧道一起断（OOM 连坐）
+MemoryMax=512M
+
+# 基础加固
+NoNewPrivileges=true
+ProtectSystem=full
+ReadWritePaths=/opt/resource-center
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
