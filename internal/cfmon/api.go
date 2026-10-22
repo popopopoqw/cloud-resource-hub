@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 )
@@ -32,11 +33,29 @@ type Client struct {
 // NewClient 创建客户端。
 func NewClient(apiToken, accountID string) *Client {
 	return &Client{
-		apiToken:  apiToken,
+		apiToken:  NormalizeAPIToken(apiToken),
 		accountID: accountID,
 		http:      &http.Client{Timeout: 30 * time.Second},
 		cacheTTL:  5 * time.Minute,
 	}
+}
+
+// NormalizeAPIToken 接受 Cloudflare 控制台复制出的原始 Token，也兼容用户
+// 粘贴完整 Authorization 请求头或 Bearer 前缀。请求客户端会自行添加 Bearer，
+// 因此配置中只保留 Token 本体，避免生成 "Bearer Bearer ..." 非法请求头。
+func NormalizeAPIToken(value string) string {
+	token := strings.TrimSpace(value)
+	if len(token) >= len("authorization:") && strings.EqualFold(token[:len("authorization:")], "authorization:") {
+		token = strings.TrimSpace(token[len("authorization:"):])
+	}
+	for {
+		fields := strings.Fields(token)
+		if len(fields) < 2 || !strings.EqualFold(fields[0], "bearer") {
+			break
+		}
+		token = strings.TrimSpace(strings.Join(fields[1:], " "))
+	}
+	return token
 }
 
 // Status 实现 Monitor。

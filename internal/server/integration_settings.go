@@ -103,7 +103,7 @@ func (s *Server) handleListR2Buckets(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 	var restErr error
 	if cfg.CFAPIToken != "" {
-		if buckets, err := client.ListBucketsViaAPI(ctx, cfg.CFAPIToken); err == nil {
+		if buckets, err := client.ListBucketsViaAPI(ctx, cfmon.NormalizeAPIToken(cfg.CFAPIToken)); err == nil {
 			writeOK(w, map[string]any{"buckets": buckets})
 			return
 		} else {
@@ -222,7 +222,7 @@ func (s *Server) testIntegration(ctx context.Context, section string, values map
 
 	case "cloudflare":
 		accountID := candidate(values, "account_id", cfg.CloudflareAccountID())
-		apiToken := candidate(values, "api_token", cfg.CFAPIToken)
+		apiToken := cfmon.NormalizeAPIToken(candidate(values, "api_token", cfg.CFAPIToken))
 		if accountID == "" || apiToken == "" {
 			return "", fmt.Errorf("Account ID 和 API Token 必须完整")
 		}
@@ -294,6 +294,9 @@ func (s *Server) handleSaveIntegrationSettings(w http.ResponseWriter, r *http.Re
 			return
 		}
 		value = strings.TrimSpace(value)
+		if req.Section == "cloudflare" && key == "api_token" {
+			value = cfmon.NormalizeAPIToken(value)
+		}
 		if value == "" { // 密钥输入框留空时保留原值，避免误清除。
 			continue
 		}

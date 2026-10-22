@@ -53,7 +53,7 @@ func setIntegrationConfigValue(cfg *config.Config, section, key, value string) {
 	case "gmail/email":
 		cfg.GmailEmail = value
 	case "cloudflare/api_token":
-		cfg.CFAPIToken = value
+		cfg.CFAPIToken = cfmon.NormalizeAPIToken(value)
 	case "cloudflare/account_id":
 		cfg.CFAccountID = value
 	case "r2/account_id":
