@@ -18,6 +18,7 @@ import (
 // GET /api/v1/settings/integrations
 // 只返回非密钥值和“是否已配置”，不会把密码、Token、Secret 回传浏览器。
 func (s *Server) handleIntegrationSettings(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Cache-Control", "no-store")
 	cfg := s.configSnapshot()
 	accountID := cfg.CloudflareAccountID()
 	forumHasLogin := false

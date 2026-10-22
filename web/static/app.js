@@ -1375,7 +1375,9 @@ async function renderSettings(app) {
   document.querySelector("#fieldHelpTooltip")?.remove();
   let cfg;
   try {
-    cfg = await api("/settings/integrations");
+    // 配置保存后必须读取最新运行时快照，避免浏览器复用旧 GET 响应，
+    // 导致顶部统计、页签计数和卡片状态仍显示为“未配置”。
+    cfg = await api("/settings/integrations", { cache: "no-store" });
   } catch (e) {
     app.innerHTML = `<div class="card"><div class="empty">${icon("alert", 36)}<br>${esc(e.message)}</div></div>`;
     return;
@@ -1698,6 +1700,9 @@ async function renderSettings(app) {
         });
         toast("配置已保存并立即生效");
         button.textContent = "已保存并生效";
+        // 保存接口会立即热更新后端运行时配置；重新渲染设置页，让统计、
+        // 页签计数、卡片徽标和敏感字段的“已配置”状态同步刷新。
+        await renderSettings(app);
       } catch (e) {
         toast(e.message, true);
         button.textContent = old;

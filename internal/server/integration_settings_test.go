@@ -78,6 +78,9 @@ func TestSavedPhoneAndEmailReappearInSettings(t *testing.T) {
 	restarted.loadPersistedIntegrationSettings()
 	w := httptest.NewRecorder()
 	restarted.handleIntegrationSettings(w, httptest.NewRequest("GET", "/api/v1/settings/integrations", nil))
+	if got := w.Header().Get("Cache-Control"); got != "no-store" {
+		t.Fatalf("Cache-Control = %q, want no-store", got)
+	}
 	var response struct {
 		Data map[string]map[string]any `json:"data"`
 	}
